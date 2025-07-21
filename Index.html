@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worknest - Plateforme d'Emploi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #0b0b0b 0%, #000000 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-indigo-600">Worknest</h1>
+                    </div>
+                </div>
+                <div id="nav-menu" class="hidden md:block" style="display: none;">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <button onclick="showSection('jobs')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Emplois</button>
+                        <button id="post-job-nav" onclick="showSection('post-job')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" style="display: none;">Poster un Emploi</button>
+                        <button id="applications-nav" onclick="showSection('applications')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium" style="display: none;">Candidatures</button>
+                        <button onclick="showSection('profile')" class="nav-btn text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Mon Profil</button>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="auth-buttons">
+                        <button onclick="showLoginModal()" class="text-gray-700 hover:text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium">Connexion</button>
+                        <button onclick="showRegisterModal()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">S'inscrire</button>
+                    </div>
+                    <div id="user-menu" class="flex items-center space-x-4" style="display: none;">
+                        <span id="user-welcome" class="text-gray-700 text-sm"></span>
+                        <button onclick="logout()" class="text-gray-700 hover:text-red-600 px-4 py-2 rounded-lg text-sm font-medium">Déconnexion</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="gradient-bg text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl font-bold mb-6">Trouvez Votre Prochain Emploi</h1>
+            <p class="text-xl mb-8 opacity-90">Connectez-vous avec les meilleures opportunités et les meilleurs talents</p>
+            <div id="hero-search" class="max-w-2xl mx-auto" style="display: none;">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" id="job-search" placeholder="Titre du poste, mots-clés..." class="flex-1 px-6 py-4 rounded-lg text-gray-900 text-lg">
+                    <input type="text" id="location-search" placeholder="Ville, région..." class="flex-1 px-6 py-4 rounded-lg text-gray-900 text-lg">
+                    <button onclick="searchJobs()" class="bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 transition-colors">Rechercher</button>
+                </div>
+            </div>
+            <div id="hero-cta" class="max-w-2xl mx-auto">
+                <p class="text-lg mb-8">Créez votre compte pour accéder aux offres d'emploi</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button onclick="showRegisterModal('candidate')" class="bg-yellow-400 text-gray-900 px-8 py-4 rounded-lg font-semibold hover:bg-yellow-300 transition-colors">Je cherche un emploi</button>
+                    <button onclick="showRegisterModal('employer')" class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors">Je recrute</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Welcome Section for Non-Logged Users -->
+    <section id="welcome-section" class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6">Pourquoi choisir Worknests ?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">La plateforme qui connecte les talents avec les meilleures opportunités professionnelles</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-8 bg-white rounded-xl shadow-lg">
+                    <div class="text-5xl mb-4">🎯</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Pour les Candidats</h3>
+                    <ul class="text-gray-600 space-y-2">
+                        <li>• Accès aux meilleures offres</li>
+                        <li>• Candidature en un clic</li>
+                        <li>• Suivi de vos candidatures</li>
+                        <li>• Profil professionnel</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center p-8 bg-white rounded-xl shadow-lg">
+                    <div class="text-5xl mb-4">🏢</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Pour les Entreprises</h3>
+                    <ul class="text-gray-600 space-y-2">
+                        <li>• Publication d'offres simple</li>
+                        <li>• Gestion des candidatures</li>
+                        <li>• Contact direct candidats</li>
+                        <li>• Tableau de bord complet</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center p-8 bg-white rounded-xl shadow-lg">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Efficace</h3>
+                    <ul class="text-gray-600 space-y-2">
+                        <li>• Processus rapide</li>
+                        <li>• Interface intuitive</li>
+                        <li>• Notifications en temps réel</li>
+                        <li>• Support dédié</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-lg text-gray-600 mb-6">Rejoignez des milliers d'utilisateurs qui nous font confiance</p>
+                <button onclick="showRegisterModal()" class="bg-indigo-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-700 transition-colors text-lg">Commencer maintenant</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Jobs Section -->
+        <section id="jobs-section" class="section-content">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-900">Offres d'Emploi Récentes</h2>
+                <div class="flex space-x-4">
+                    <select id="job-filter" class="px-4 py-2 border border-gray-300 rounded-lg">
+                        <option value="">Tous les secteurs</option>
+                        <option value="tech">Technologie</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="finance">Finance</option>
+                        <option value="design">Design</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="jobs-container" class="grid gap-6">
+                <!-- Job listings will be populated here -->
+            </div>
+        </section>
+
+        <!-- Post Job Section -->
+        <section id="post-job-section" class="section-content hidden">
+            <div class="max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Poster une Offre d'Emploi</h2>
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <form id="job-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Titre du Poste</label>
+                                <input type="text" id="job-title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Entreprise</label>
+                                <input type="text" id="company-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Localisation</label>
+                                <input type="text" id="job-location" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Secteur</label>
+                                <select id="job-sector" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                    <option value="">Sélectionner un secteur</option>
+                                    <option value="tech">Technologie</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="design">Design</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description du Poste</label>
+                            <textarea id="job-description" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Salaire (optionnel)</label>
+                                <input type="text" id="job-salary" placeholder="ex: 45 000 - 55 000 €" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Type de Contrat</label>
+                                <select id="job-type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                    <option value="">Sélectionner</option>
+                                    <option value="CDI">CDI</option>
+                                    <option value="CDD">CDD</option>
+                                    <option value="Stage">Stage</option>
+                                    <option value="Freelance">Freelance</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email de Contact *</label>
+                            <input type="email" id="employer-email" placeholder="recrutement@entreprise.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            <p class="text-sm text-gray-500 mt-1">Les candidatures seront envoyées à cette adresse</p>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-indigo-600 text-white py-4 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">Publier l'Offre</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Applications Section -->
+        <section id="applications-section" class="section-content hidden">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Candidatures Reçues</h2>
+                
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold text-gray-900">Tableau de Bord Employeur</h3>
+                        <div class="flex space-x-4">
+                            <select id="application-filter" class="px-4 py-2 border border-gray-300 rounded-lg">
+                                <option value="">Toutes les candidatures</option>
+                                <option value="new">Nouvelles</option>
+                                <option value="reviewed">Examinées</option>
+                                <option value="contacted">Contactées</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="applications-container" class="space-y-4">
+                        <!-- Applications will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile-section" class="section-content hidden">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Mon Profil</h2>
+                <div id="profile-content" class="bg-white rounded-xl shadow-lg p-8">
+                    <!-- Profile content will be populated dynamically -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // User authentication system
+        let currentUser = null;
+        let isLoggedIn = false;
+
+        // Authentication functions
+        function showLoginModal() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+                    <div class="p-6 border-b">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-2xl font-bold text-gray-900">Connexion</h3>
+                            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                        </div>
+                    </div>
+                    
+                    <form id="login-form" class="p-6 space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="login-email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
+                            <input type="password" id="login-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                        </div>
+                        
+                        <div class="flex space-x-4 pt-4">
+                            <button type="button" onclick="closeModal()" class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Annuler</button>
+                            <button type="submit" class="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Se connecter</button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-sm text-gray-600">Pas encore de compte ? 
+                                <button type="button" onclick="closeModal(); showRegisterModal();" class="text-indigo-600 hover:underline">S'inscrire</button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+        }
+
+        function showRegisterModal(userType = null) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full">
+                    <div class="p-6 border-b">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-2xl font-bold text-gray-900">Créer un compte</h3>
+                            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                        </div>
+                    </div>
+                    
+                    <form id="register-form" class="p-6 space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Type de compte</label>
+                            <select id="account-type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                <option value="">Sélectionner</option>
+                                <option value="candidate" ${userType === 'candidate' ? 'selected' : ''}>Candidat - Je cherche un emploi</option>
+                                <option value="employer" ${userType === 'employer' ? 'selected' : ''}>Employeur - Je recrute</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
+                                <input type="text" id="register-firstname" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
+                                <input type="text" id="register-lastname" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="register-email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                        </div>
+                        
+                        <div id="company-field" style="display: none;">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nom de l'entreprise</label>
+                            <input type="text" id="register-company" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
+                            <input type="password" id="register-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
+                            <input type="password" id="register-confirm-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <input type="checkbox" id="terms-consent" class="mt-1 mr-3" required>
+                            <label for="terms-consent" class="text-sm text-gray-700">
+                                J'accepte les conditions d'utilisation et la politique de confidentialité
+                            </label>
+                        </div>
+                        
+                        <div class="flex space-x-4 pt-4">
+                            <button type="button" onclick="closeModal()" class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Annuler</button>
+                            <button type="submit" class="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Créer le compte</button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="text-sm text-gray-600">Déjà un compte ? 
+                                <button type="button" onclick="closeModal(); showLoginModal();" class="text-indigo-600 hover:underline">Se connecter</button>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Show/hide company field based on account type
+            document.getElementById('account-type').addEventListener('change', function() {
+                const companyField = document.getElementById('company-field');
+                const companyInput = document.getElementById('register-company');
+                if (this.value === 'employer') {
+                    companyField.style.display = 'block';
+                    companyInput.required = true;
+                } else {
+                    companyField.style.display = 'none';
+                    companyInput.required = false;
+                }
+            });
+            
+            // Trigger change event if userType is pre-selected
+            if (userType) {
+                document.getElementById('account-type').dispatchEvent(new Event('change'));
+            }
+            
+            document.getElementById('register-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleRegister();
+            });
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Simulate login (in real app, this would be an API call)
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                isLoggedIn = true;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                closeModal();
+                updateUIForLoggedInUser();
+                alert(`Connexion réussie ! Bienvenue ${user.firstName} ${user.lastName}`);
+            } else {
+                alert('Email ou mot de passe incorrect');
+            }
+        }
+
+        function handleRegister() {
+            const accountType = document.getElementById('account-type').value;
+            const firstName = document.getElementById('register-firstname').value;
+            const lastName = document.getElementById('register-lastname').value;
+            const email = document.getElementById('register-email').value;
+            const company = document.getElementById('register-company').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            // Validation
+            if (!accountType) {
+                alert('Veuillez sélectionner un type de compte');
+                return;
+            }
+            
+            if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            if (accountType === 'employer' && !company) {
+                alert('Veuillez renseigner le nom de votre entreprise');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Les mots de passe ne correspondent pas');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Le mot de passe doit contenir au moins 6 caractères');
+                return;
+            }
+            
+            // Check if user already exists
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.email === email)) {
+                alert('Un compte avec cet email existe déjà');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                accountType,
+                firstName,
+                lastName,
+                email,
+                company: accountType === 'employer' ? company : null,
+                password,
+                skills: accountType === 'candidate' ? ['JavaScript', 'React', 'Node.js', 'Python'] : [],
+                location: 'Paris, France',
+                bio: accountType === 'candidate' ? 
+                    `Développeur passionné avec plusieurs années d'expérience dans le développement web. Toujours à la recherche de nouveaux défis et d'opportunités d'apprentissage.` :
+                    `Entreprise innovante à la recherche des meilleurs talents pour rejoindre notre équipe dynamique.`,
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            // Auto login
+            currentUser = newUser;
+            isLoggedIn = true;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            closeModal();
+            updateUIForLoggedInUser();
+            alert(`🎉 Compte créé avec succès !\n\nBienvenue ${firstName} ${lastName} !\n\nVous pouvez maintenant accéder à toutes les fonctionnalités de la plateforme.`);
+        }
+
+        function updateUIForLoggedInUser() {
+            console.log('Updating UI for logged in user:', currentUser);
+            
+            // Hide auth buttons, show user menu
+            document.getElementById('auth-buttons').style.display = 'none';
+            document.getElementById('user-menu').style.display = 'flex';
+            document.getElementById('user-welcome').textContent = `Bonjour ${currentUser.firstName}`;
+            
+            // Show navigation menu
+            document.getElementById('nav-menu').style.display = 'block';
+            
+            // Show/hide sections based on user type
+            if (currentUser.accountType === 'employer') {
+                document.getElementById('post-job-nav').style.display = 'block';
+                document.getElementById('applications-nav').style.display = 'block';
+                
+                // Pre-fill employer email in job posting form
+                setTimeout(() => {
+                    const employerEmailField = document.getElementById('employer-email');
+                    if (employerEmailField) {
+                        employerEmailField.value = currentUser.email;
+                        employerEmailField.readOnly = true;
+                        employerEmailField.style.backgroundColor = '#f9fafb';
+                    }
+                }, 100);
+            } else {
+                document.getElementById('post-job-nav').style.display = 'none';
+                document.getElementById('applications-nav').style.display = 'none';
+            }
+            
+            // Update hero section
+            document.getElementById('hero-cta').style.display = 'none';
+            document.getElementById('hero-search').style.display = 'block';
+            
+            // Hide welcome section, show jobs
+            document.getElementById('welcome-section').style.display = 'none';
+            showSection('jobs');
+            
+            // Refresh job display to show correct buttons
+            displayJobs(allJobs);
+        }
+
+        function logout() {
+            currentUser = null;
+            isLoggedIn = false;
+            localStorage.removeItem('currentUser');
+            
+            // Reset UI
+            document.getElementById('auth-buttons').style.display = 'flex';
+            document.getElementById('user-menu').style.display = 'none';
+            document.getElementById('nav-menu').style.display = 'none';
+            
+            // Reset hero section
+            document.getElementById('hero-cta').style.display = 'block';
+            document.getElementById('hero-search').style.display = 'none';
+            
+            // Show welcome section
+            document.getElementById('welcome-section').style.display = 'block';
+            
+            // Hide all content sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            alert('Déconnexion réussie');
+        }
+
+        function checkAuthOnLoad() {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                isLoggedIn = true;
+                updateUIForLoggedInUser();
+            }
+        }
+
+        // Sample job data
+        const sampleJobs = [
+            {
+                id: 1,
+                title: "Développeur Frontend React",
+                company: "TechCorp",
+                location: "Paris",
+                sector: "tech",
+                type: "CDI",
+                salary: "45 000 - 55 000 €",
+                description: "Nous recherchons un développeur Frontend expérimenté en React pour rejoindre notre équipe dynamique.",
+                posted: "Il y a 2 jours",
+                employerEmail: "recrutement@techcorp.fr"
+            },
+            {
+                id: 2,
+                title: "Chef de Projet Marketing",
+                company: "MarketPro",
+                location: "Lyon",
+                sector: "marketing",
+                type: "CDI",
+                salary: "40 000 - 50 000 €",
+                description: "Poste de chef de projet marketing pour gérer nos campagnes digitales et coordonner les équipes.",
+                posted: "Il y a 1 jour",
+                employerEmail: "rh@marketpro.com"
+            },
+            {
+                id: 3,
+                title: "Analyste Financier",
+                company: "FinanceExpert",
+                location: "Marseille",
+                sector: "finance",
+                type: "CDD",
+                salary: "38 000 - 45 000 €",
+                description: "Analyste financier pour accompagner nos clients dans leurs décisions d'investissement.",
+                posted: "Il y a 3 jours",
+                employerEmail: "jobs@financeexpert.fr"
+            },
+            {
+                id: 4,
+                title: "Designer UX/UI",
+                company: "CreativeStudio",
+                location: "Bordeaux",
+                sector: "design",
+                type: "Freelance",
+                salary: "400 - 600 €/jour",
+                description: "Designer UX/UI pour créer des expériences utilisateur exceptionnelles pour nos clients.",
+                posted: "Il y a 1 jour",
+                employerEmail: "contact@creativestudio.fr"
+            }
+        ];
+
+        let allJobs = [...sampleJobs];
+
+        // Navigation functions
+        function showSection(sectionName) {
+            // Check if user is logged in
+            if (!isLoggedIn) {
+                alert('Vous devez vous connecter pour accéder à cette section');
+                showLoginModal();
+                return;
+            }
+            
+            // Check permissions for employer-only sections
+            if ((sectionName === 'post-job' || sectionName === 'applications') && currentUser.accountType !== 'employer') {
+                alert('Cette section est réservée aux employeurs');
+                return;
+            }
+            
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            if (sectionName === 'jobs') {
+                document.getElementById('jobs-section').classList.remove('hidden');
+                document.getElementById('hero').style.display = 'block';
+            } else {
+                document.getElementById('hero').style.display = 'none';
+                if (sectionName === 'post-job') {
+                    document.getElementById('post-job-section').classList.remove('hidden');
+                } else if (sectionName === 'applications') {
+                    document.getElementById('applications-section').classList.remove('hidden');
+                    displayApplications();
+                } else if (sectionName === 'profile') {
+                    document.getElementById('profile-section').classList.remove('hidden');
+                    displayUserProfile();
+                }
+            }
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-600', 'font-semibold');
+                btn.classList.add('text-gray-700');
+            });
+            if (event && event.target) {
+                event.target.classList.remove('text-gray-700');
+                event.target.classList.add('text-indigo-600', 'font-semibold');
+            }
+        }
+
+        function displayUserProfile() {
+            const profileContainer = document.getElementById('profile-content');
+            
+            if (!currentUser) {
+                profileContainer.innerHTML = '<p class="text-center text-gray-500">Erreur: Utilisateur non connecté</p>';
+                return;
+            }
+            
+            // Get user applications
+            const userApplications = JSON.parse(localStorage.getItem('userApplications') || '[]');
+            const userApps = userApplications.filter(app => app.email === currentUser.email);
+            
+            if (currentUser.accountType === 'candidate') {
+                profileContainer.innerHTML = `
+                    <div class="flex items-center space-x-6 mb-8">
+                        <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <span class="text-3xl font-bold text-indigo-600">${currentUser.firstName.charAt(0)}${currentUser.lastName.charAt(0)}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">${currentUser.firstName} ${currentUser.lastName}</h3>
+                            <p class="text-gray-600">${currentUser.accountType === 'candidate' ? 'Candidat' : 'Employeur'}</p>
+                            <p class="text-gray-500">${currentUser.location || 'Paris, France'}</p>
+                            <p class="text-gray-500">${currentUser.email}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">À propos</h4>
+                        <p class="text-gray-700">${currentUser.bio || 'Aucune description disponible'}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Compétences</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${(currentUser.skills || []).map(skill => 
+                                    `<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">${skill}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Mes Candidatures (${userApps.length})</h4>
+                            <div class="space-y-3 max-h-64 overflow-y-auto">
+                                ${userApps.length > 0 ? userApps.map(app => `
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <span class="font-medium">${app.jobTitle}</span>
+                                            <p class="text-sm text-gray-600">${app.company}</p>
+                                            <p class="text-xs text-gray-500">${app.date}</p>
+                                        </div>
+                                        <span class="text-sm px-2 py-1 rounded-full ${
+                                            app.status === 'Envoyée' ? 'bg-blue-100 text-blue-600' :
+                                            app.status === 'En cours' ? 'bg-yellow-100 text-yellow-600' :
+                                            'bg-green-100 text-green-600'
+                                        }">${app.status}</span>
+                                    </div>
+                                `).join('') : '<p class="text-gray-500 text-sm">Aucune candidature envoyée</p>'}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Informations du compte</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-600">Type de compte:</span>
+                                <span class="ml-2 font-medium">Candidat</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Membre depuis:</span>
+                                <span class="ml-2 font-medium">${new Date(currentUser.createdAt).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Employer profile
+                const employerJobs = allJobs.filter(job => job.employerEmail === currentUser.email);
+                const employerApplications = allApplications.filter(app => app.employerEmail === currentUser.email);
+                
+                profileContainer.innerHTML = `
+                    <div class="flex items-center space-x-6 mb-8">
+                        <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <span class="text-3xl font-bold text-indigo-600">${currentUser.firstName.charAt(0)}${currentUser.lastName.charAt(0)}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">${currentUser.firstName} ${currentUser.lastName}</h3>
+                            <p class="text-gray-600">Employeur - ${currentUser.company}</p>
+                            <p class="text-gray-500">${currentUser.location || 'Paris, France'}</p>
+                            <p class="text-gray-500">${currentUser.email}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">À propos de l'entreprise</h4>
+                        <p class="text-gray-700">${currentUser.bio || 'Aucune description disponible'}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-blue-50 p-6 rounded-lg text-center">
+                            <div class="text-3xl font-bold text-blue-600">${employerJobs.length}</div>
+                            <div class="text-blue-800 font-medium">Offres publiées</div>
+                        </div>
+                        <div class="bg-green-50 p-6 rounded-lg text-center">
+                            <div class="text-3xl font-bold text-green-600">${employerApplications.length}</div>
+                            <div class="text-green-800 font-medium">Candidatures reçues</div>
+                        </div>
+                        <div class="bg-yellow-50 p-6 rounded-lg text-center">
+                            <div class="text-3xl font-bold text-yellow-600">${employerApplications.filter(app => app.status === 'new').length}</div>
+                            <div class="text-yellow-800 font-medium">Nouvelles candidatures</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Mes Offres d'Emploi</h4>
+                            <div class="space-y-3 max-h-64 overflow-y-auto">
+                                ${employerJobs.length > 0 ? employerJobs.slice(0, 5).map(job => `
+                                    <div class="p-3 bg-gray-50 rounded-lg">
+                                        <div class="font-medium">${job.title}</div>
+                                        <div class="text-sm text-gray-600">${job.location} • ${job.type}</div>
+                                        <div class="text-xs text-gray-500">${job.posted}</div>
+                                    </div>
+                                `).join('') : '<p class="text-gray-500 text-sm">Aucune offre publiée</p>'}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4">Candidatures Récentes</h4>
+                            <div class="space-y-3 max-h-64 overflow-y-auto">
+                                ${employerApplications.length > 0 ? employerApplications.slice(0, 5).map(app => `
+                                    <div class="p-3 bg-gray-50 rounded-lg">
+                                        <div class="font-medium">${app.candidateName}</div>
+                                        <div class="text-sm text-gray-600">${app.jobTitle}</div>
+                                        <div class="text-xs text-gray-500">${app.date}</div>
+                                    </div>
+                                `).join('') : '<p class="text-gray-500 text-sm">Aucune candidature reçue</p>'}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 pt-6 border-t">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-4">Informations du compte</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-600">Type de compte:</span>
+                                <span class="ml-2 font-medium">Employeur</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-600">Membre depuis:</span>
+                                <span class="ml-2 font-medium">${new Date(currentUser.createdAt).toLocaleDateString('fr-FR')}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Function to determine which button to show for each job
+        function getJobActionButton(job) {
+            console.log('Checking button for job:', job.id, 'User logged in:', isLoggedIn, 'Current user:', currentUser);
+            
+            // If user is not logged in
+            if (!isLoggedIn || !currentUser) {
+                return `<button onclick="showLoginModal()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">Se connecter pour postuler</button>`;
+            }
+            
+            // If user is an employer
+            if (currentUser.accountType === 'employer') {
+                // If it's their own job offer
+                if (job.employerEmail === currentUser.email) {
+                    return `
+                        <button onclick="editJob(${job.id})" class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors text-sm">✏️ Modifier</button>
+                        <button onclick="deleteJob(${job.id})" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">🗑️ Supprimer</button>
+                    `;
+                } else {
+                    // Other employer's job - they can't apply or modify
+                    return `<button class="bg-gray-400 text-white px-6 py-2 rounded-lg cursor-not-allowed" disabled>Réservé aux candidats</button>`;
+                }
+            }
+            
+            // If user is a candidate
+            if (currentUser && currentUser.accountType === 'candidate') {
+                return `<button onclick="applyToJob(${job.id})" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">Postuler</button>`;
+            }
+            
+            // Default fallback
+            return `<button onclick="showLoginModal()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors">Se connecter pour postuler</button>`;
+        }
+
+        // Job search and display functions
+        function displayJobs(jobs) {
+            const container = document.getElementById('jobs-container');
+            container.innerHTML = '';
+            
+            console.log('Displaying jobs. Current user state:', { isLoggedIn, currentUser });
+            
+            jobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.className = 'bg-white rounded-xl shadow-md p-6 card-hover cursor-pointer';
+                jobCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">${job.title}</h3>
+                            <p class="text-indigo-600 font-medium">${job.company}</p>
+                        </div>
+                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">${job.type}</span>
+                    </div>
+                    <div class="flex items-center text-gray-600 mb-3">
+                        <span class="mr-4">📍 ${job.location}</span>
+                        <span class="mr-4">💰 ${job.salary}</span>
+                        <span>🕒 ${job.posted}</span>
+                    </div>
+                    <p class="text-gray-700 mb-4">${job.description}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">${job.sector}</span>
+                        <div class="flex space-x-2">
+                            ${getJobActionButton(job)}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(jobCard);
+            });
+        }
+
+        function searchJobs() {
+            const searchTerm = document.getElementById('job-search').value.toLowerCase();
+            const location = document.getElementById('location-search').value.toLowerCase();
+            
+            const filteredJobs = allJobs.filter(job => {
+                const matchesSearch = job.title.toLowerCase().includes(searchTerm) || 
+                                    job.company.toLowerCase().includes(searchTerm) ||
+                                    job.description.toLowerCase().includes(searchTerm);
+                const matchesLocation = location === '' || job.location.toLowerCase().includes(location);
+                return matchesSearch && matchesLocation;
+            });
+            
+            displayJobs(filteredJobs);
+            
+            // Show jobs section
+            showSection('jobs');
+        }
+
+        function applyToJob(jobId) {
+            console.log('Apply button clicked for job ID:', jobId);
+            
+            // Check if user is logged in
+            if (!isLoggedIn) {
+                alert('Vous devez vous connecter pour postuler à une offre');
+                showLoginModal();
+                return;
+            }
+            
+            // Check if user is a candidate
+            if (currentUser.accountType !== 'candidate') {
+                alert('Seuls les candidats peuvent postuler aux offres d\'emploi');
+                return;
+            }
+            
+            const job = allJobs.find(j => j.id === jobId);
+            console.log('Found job:', job);
+            
+            if (job) {
+                showApplicationModal(job.title, job.company, job.employerEmail);
+            } else {
+                alert('Erreur: Offre d\'emploi introuvable');
+            }
+        }
+        
+        // Applications management
+        let allApplications = [
+            {
+                id: 1,
+                jobTitle: "Développeur Frontend React",
+                company: "TechCorp",
+                candidateName: "Marie Dubois",
+                email: "marie.dubois@email.com",
+                phone: "06 12 34 56 78",
+                linkedin: "https://linkedin.com/in/marie-dubois",
+                coverLetter: "Passionnée par le développement frontend, j'ai 3 ans d'expérience en React...",
+                salaryExpectation: "48 000 €",
+                availability: "2 semaines",
+                date: "15/12/2024",
+                status: "new",
+                employerEmail: "recrutement@techcorp.fr"
+            },
+            {
+                id: 2,
+                jobTitle: "Chef de Projet Marketing",
+                company: "MarketPro",
+                candidateName: "Pierre Martin",
+                email: "pierre.martin@email.com",
+                phone: "07 98 76 54 32",
+                linkedin: "https://linkedin.com/in/pierre-martin",
+                coverLetter: "Fort de 5 ans d'expérience en marketing digital, je souhaite rejoindre votre équipe...",
+                salaryExpectation: "45 000 €",
+                availability: "1 mois",
+                date: "14/12/2024",
+                status: "reviewed",
+                employerEmail: "rh@marketpro.com"
+            }
+        ];
+        
+        function displayApplications() {
+            const container = document.getElementById('applications-container');
+            container.innerHTML = '';
+            
+            // Filter applications for current employer only
+            const employerApplications = allApplications.filter(app => 
+                app.employerEmail === currentUser.email
+            );
+            
+            if (employerApplications.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-6xl mb-4">📋</div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucune candidature reçue</h3>
+                        <p class="text-gray-600">Les candidatures pour vos offres d'emploi apparaîtront ici une fois que les candidats postuleront.</p>
+                        <p class="text-gray-500 text-sm mt-2">Email employeur: ${currentUser.email}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            employerApplications.forEach(application => {
+                const statusColors = {
+                    'new': 'bg-blue-100 text-blue-800',
+                    'reviewed': 'bg-yellow-100 text-yellow-800',
+                    'contacted': 'bg-green-100 text-green-800'
+                };
+                
+                const statusLabels = {
+                    'new': 'Nouvelle',
+                    'reviewed': 'Examinée',
+                    'contacted': 'Contactée'
+                };
+                
+                const applicationCard = document.createElement('div');
+                applicationCard.className = 'border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow';
+                applicationCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900">${application.candidateName}</h4>
+                            <p class="text-indigo-600 font-medium">${application.jobTitle} - ${application.company}</p>
+                            <p class="text-gray-500 text-sm">Candidature reçue le ${application.date}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm ${statusColors[application.status]}">${statusLabels[application.status]}</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-sm text-gray-600"><strong>Email:</strong> ${application.email}</p>
+                            <p class="text-sm text-gray-600"><strong>Téléphone:</strong> ${application.phone}</p>
+                            ${application.linkedin ? `<p class="text-sm text-gray-600"><strong>LinkedIn:</strong> <a href="${application.linkedin}" target="_blank" class="text-indigo-600 hover:underline">Voir profil</a></p>` : ''}
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600"><strong>Prétentions:</strong> ${application.salaryExpectation || 'Non spécifié'}</p>
+                            <p class="text-sm text-gray-600"><strong>Disponibilité:</strong> ${application.availability}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Lettre de motivation:</p>
+                        <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">${application.coverLetter.substring(0, 200)}${application.coverLetter.length > 200 ? '...' : ''}</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="contactCandidate('${application.email}', '${application.candidateName}', '${application.jobTitle}')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">Contacter</button>
+                        <button onclick="downloadCV('${application.candidateName}')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">📄 Télécharger CV</button>
+                        <button onclick="updateApplicationStatus(${application.id}, 'reviewed')" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors text-sm">Marquer comme examinée</button>
+                        <button onclick="viewFullApplication(${application.id})" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors text-sm">Voir détails</button>
+                        <button onclick="deleteApplication(${application.id})" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">🗑️ Supprimer</button>
+                    </div>
+                `;
+                container.appendChild(applicationCard);
+            });
+        }
+        
+        function contactCandidate(email, name, jobTitle) {
+            const subject = encodeURIComponent(`Candidature pour le poste de ${jobTitle}`);
+            const body = encodeURIComponent(`Bonjour ${name},\n\nNous avons bien reçu votre candidature pour le poste de ${jobTitle}.\n\nNous souhaitons vous rencontrer pour discuter de votre profil.\n\nPouvez-vous nous confirmer vos disponibilités pour un entretien ?\n\nCordialement,\nL'équipe RH`);
+            
+            window.open(`mailto:${email}?subject=${subject}&body=${body}`);
+            
+            // Update status to contacted
+            const application = allApplications.find(app => app.email === email);
+            if (application) {
+                updateApplicationStatus(application.id, 'contacted');
+            }
+        }
+        
+        function updateApplicationStatus(applicationId, newStatus) {
+            const application = allApplications.find(app => app.id === applicationId);
+            if (application) {
+                application.status = newStatus;
+                // Save updated status to localStorage
+                localStorage.setItem('allApplications', JSON.stringify(allApplications));
+                displayApplications();
+            }
+        }
+        
+        function editJob(jobId) {
+            const job = allJobs.find(j => j.id === jobId);
+            if (!job) {
+                alert('Erreur: Offre introuvable');
+                return;
+            }
+            
+            // Check if user is the owner of this job
+            if (!currentUser || currentUser.accountType !== 'employer' || job.employerEmail !== currentUser.email) {
+                alert('Vous ne pouvez modifier que vos propres offres d\'emploi');
+                return;
+            }
+            
+            // Switch to post-job section and pre-fill the form
+            showSection('post-job');
+            
+            // Pre-fill the form with existing job data
+            setTimeout(() => {
+                document.getElementById('job-title').value = job.title;
+                document.getElementById('company-name').value = job.company;
+                document.getElementById('job-location').value = job.location;
+                document.getElementById('job-sector').value = job.sector;
+                document.getElementById('job-type').value = job.type;
+                document.getElementById('job-salary').value = job.salary === 'À négocier' ? '' : job.salary;
+                document.getElementById('job-description').value = job.description;
+                document.getElementById('employer-email').value = job.employerEmail;
+                
+                // Change form title and button text
+                const formTitle = document.querySelector('#post-job-section h2');
+                if (formTitle) {
+                    formTitle.textContent = 'Modifier l\'Offre d\'Emploi';
+                }
+                
+                const submitButton = document.querySelector('#job-form button[type="submit"]');
+                if (submitButton) {
+                    submitButton.textContent = 'Mettre à jour l\'Offre';
+                    submitButton.setAttribute('data-editing', jobId);
+                }
+            }, 100);
+        }
+
+        function deleteJob(jobId) {
+            const job = allJobs.find(j => j.id === jobId);
+            if (!job) {
+                alert('Erreur: Offre introuvable');
+                return;
+            }
+            
+            // Check if user is the owner of this job
+            if (!currentUser || currentUser.accountType !== 'employer' || job.employerEmail !== currentUser.email) {
+                alert('Vous ne pouvez supprimer que vos propres offres d\'emploi');
+                return;
+            }
+            
+            // Confirm deletion
+            const confirmDelete = confirm(`Êtes-vous sûr de vouloir supprimer cette offre ?\n\n"${job.title}" chez ${job.company}\n\nCette action est irréversible. Toutes les candidatures associées seront également supprimées.`);
+            
+            if (confirmDelete) {
+                // Remove job from array
+                const jobIndex = allJobs.findIndex(j => j.id === jobId);
+                if (jobIndex > -1) {
+                    allJobs.splice(jobIndex, 1);
+                    
+                    // Remove associated applications
+                    const applicationsToRemove = allApplications.filter(app => 
+                        app.jobTitle === job.title && app.company === job.company && app.employerEmail === job.employerEmail
+                    );
+                    
+                    applicationsToRemove.forEach(app => {
+                        const appIndex = allApplications.findIndex(a => a.id === app.id);
+                        if (appIndex > -1) {
+                            allApplications.splice(appIndex, 1);
+                        }
+                    });
+                    
+                    // Save to localStorage
+                    localStorage.setItem('allJobs', JSON.stringify(allJobs));
+                    localStorage.setItem('allApplications', JSON.stringify(allApplications));
+                    
+                    // Refresh display
+                    displayJobs(allJobs);
+                    
+                    alert(`✅ Offre supprimée avec succès!\n\n"${job.title}" chez ${job.company} a été supprimée.\n${applicationsToRemove.length} candidature(s) associée(s) ont également été supprimées.`);
+                }
+            }
+        }
+        
+        function deleteApplication(applicationId) {
+            const application = allApplications.find(app => app.id === applicationId);
+            if (!application) {
+                alert('Erreur: Candidature introuvable');
+                return;
+            }
+            
+            // Check if user is the employer who received this application
+            if (!currentUser || currentUser.accountType !== 'employer' || application.employerEmail !== currentUser.email) {
+                alert('Vous ne pouvez supprimer que les candidatures reçues pour vos offres');
+                return;
+            }
+            
+            // Confirm deletion
+            const confirmDelete = confirm(`Êtes-vous sûr de vouloir supprimer cette candidature ?\n\nCandidat: ${application.candidateName}\nPoste: ${application.jobTitle}\nDate: ${application.date}\n\nCette action est irréversible.`);
+            
+            if (confirmDelete) {
+                // Remove application from array
+                const appIndex = allApplications.findIndex(app => app.id === applicationId);
+                if (appIndex > -1) {
+                    allApplications.splice(appIndex, 1);
+                    
+                    // Save to localStorage
+                    localStorage.setItem('allApplications', JSON.stringify(allApplications));
+                    
+                    // Refresh display
+                    displayApplications();
+                    
+                    alert(`✅ Candidature supprimée avec succès!\n\nLa candidature de ${application.candidateName} pour le poste "${application.jobTitle}" a été supprimée.`);
+                }
+            }
+        }
+        
+        function viewFullApplication(applicationId) {
+            const application = allApplications.find(app => app.id === applicationId);
+            if (application) {
+                alert(`Candidature complète:\n\nNom: ${application.candidateName}\nEmail: ${application.email}\nTéléphone: ${application.phone}\nLinkedIn: ${application.linkedin || 'Non renseigné'}\n\nLettre de motivation:\n${application.coverLetter}\n\nPrétentions salariales: ${application.salaryExpectation || 'Non spécifié'}\nDisponibilité: ${application.availability}`);
+            }
+        }
+        
+        function downloadCV(candidateName) {
+            // Simulate CV download - in a real app, this would download the actual file
+            const cvContent = `CV - ${candidateName}
+            
+INFORMATIONS PERSONNELLES
+Nom: ${candidateName}
+Email: ${candidateName.toLowerCase().replace(' ', '.')}@email.com
+Téléphone: 06 12 34 56 78
+
+EXPÉRIENCE PROFESSIONNELLE
+2021-2024 : Développeur Full Stack - TechCorp
+- Développement d'applications web avec React et Node.js
+- Collaboration avec les équipes design et produit
+- Maintenance et optimisation des performances
+
+2019-2021 : Développeur Frontend - StartupInnovante
+- Création d'interfaces utilisateur modernes
+- Intégration d'APIs REST
+- Tests unitaires et fonctionnels
+
+FORMATION
+2019 : Master en Informatique - Université Paris
+2017 : Licence en Informatique - Université Lyon
+
+COMPÉTENCES TECHNIQUES
+- Langages: JavaScript, Python, Java
+- Frameworks: React, Vue.js, Node.js
+- Bases de données: MySQL, MongoDB
+- Outils: Git, Docker, AWS
+
+LANGUES
+- Français: Langue maternelle
+- Anglais: Courant
+- Espagnol: Intermédiaire
+
+CENTRES D'INTÉRÊT
+- Développement open source
+- Veille technologique
+- Sport et voyage`;
+
+            // Create and download the CV file
+            const blob = new Blob([cvContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CV_${candidateName.replace(' ', '_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert(`📄 CV de ${candidateName} téléchargé avec succès !\n\nLe fichier a été sauvegardé dans vos téléchargements.`);
+        }
+        
+        function showApplicationModal(jobTitle, company, employerEmail) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-2xl font-bold text-gray-900">Postuler pour ${jobTitle}</h3>
+                            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+                        </div>
+                        <p class="text-gray-600 mt-2">Chez ${company}</p>
+                    </div>
+                    
+                    <form id="application-form" class="p-6 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Prénom *</label>
+                                <input type="text" id="first-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nom *</label>
+                                <input type="text" id="last-name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Téléphone *</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn (optionnel)</label>
+                            <input type="url" id="linkedin" placeholder="https://linkedin.com/in/votre-profil" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">CV (PDF) *</label>
+                            <input type="file" id="cv-file" accept=".pdf,.doc,.docx" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            <p class="text-sm text-gray-500 mt-1">Formats acceptés: PDF, DOC, DOCX (max 5MB)</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Lettre de motivation *</label>
+                            <textarea id="cover-letter" rows="6" placeholder="Expliquez pourquoi vous êtes le candidat idéal pour ce poste..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Prétentions salariales (optionnel)</label>
+                            <input type="text" id="salary-expectation" placeholder="ex: 45 000 € annuel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Disponibilité</label>
+                            <select id="availability" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                                <option value="">Sélectionner</option>
+                                <option value="immediate">Immédiate</option>
+                                <option value="2weeks">2 semaines</option>
+                                <option value="1month">1 mois</option>
+                                <option value="2months">2 mois</option>
+                                <option value="3months">3 mois ou plus</option>
+                            </select>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <input type="checkbox" id="consent" class="mt-1 mr-3" required>
+                            <label for="consent" class="text-sm text-gray-700">
+                                J'accepte que mes données personnelles soient traitées dans le cadre de ma candidature et que l'employeur me contacte par email ou téléphone. *
+                            </label>
+                        </div>
+                        
+                        <div class="flex space-x-4 pt-4">
+                            <button type="button" onclick="closeModal()" class="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Annuler</button>
+                            <button type="submit" class="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">Envoyer ma candidature</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle form submission
+            document.getElementById('application-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitApplication(jobTitle, company);
+            });
+        }
+        
+        function closeModal() {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function submitApplication(jobTitle, company) {
+            const job = allJobs.find(j => j.title === jobTitle && j.company === company);
+            const employerEmail = job ? job.employerEmail : 'employer@company.com';
+            
+            const formData = {
+                firstName: document.getElementById('first-name').value,
+                lastName: document.getElementById('last-name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                linkedin: document.getElementById('linkedin').value,
+                coverLetter: document.getElementById('cover-letter').value,
+                salaryExpectation: document.getElementById('salary-expectation').value,
+                availability: document.getElementById('availability').value,
+                cvFile: document.getElementById('cv-file').files[0]
+            };
+            
+            // Add to applications database
+            const newApplication = {
+                id: Date.now(), // Use timestamp for unique ID
+                jobTitle: jobTitle,
+                company: company,
+                candidateName: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                phone: formData.phone,
+                linkedin: formData.linkedin,
+                coverLetter: formData.coverLetter,
+                salaryExpectation: formData.salaryExpectation,
+                availability: formData.availability,
+                date: new Date().toLocaleDateString('fr-FR'),
+                dateTime: new Date().toISOString(),
+                status: 'new',
+                employerEmail: employerEmail
+            };
+            
+            allApplications.unshift(newApplication);
+            
+            // SAVE TO LOCALSTORAGE - PERMANENT STORAGE
+            localStorage.setItem('allApplications', JSON.stringify(allApplications));
+            
+            // Simulate sending application
+            const applicationDate = new Date().toLocaleDateString('fr-FR');
+            
+            // Close modal
+            closeModal();
+            
+            // Show success message with contact info
+            alert(`✅ Candidature envoyée avec succès!\n\nPoste: ${jobTitle}\nEntreprise: ${company}\nCandidat: ${formData.firstName} ${formData.lastName}\nEmail: ${formData.email}\nTéléphone: ${formData.phone}\nDate: ${applicationDate}\n\n📧 Votre candidature a été envoyée à: ${employerEmail}\n\nL'employeur recevra votre CV, lettre de motivation et toutes vos informations de contact. Il pourra vous contacter directement par email ou téléphone.\n\nVous pouvez voir le statut de votre candidature dans la section "Candidatures" de l'employeur.`);
+            
+            // Update profile section with new application
+            updateUserApplications(jobTitle, company, formData);
+        }
+        
+        function updateUserApplications(jobTitle, company, formData) {
+            // This would normally save to a database, here we simulate it
+            console.log(`Nouvelle candidature ajoutée: ${jobTitle} chez ${company}`, formData);
+            
+            // Add to user's application history (in real app, this would be saved to database)
+            const applicationHistory = JSON.parse(localStorage.getItem('userApplications') || '[]');
+            applicationHistory.unshift({
+                jobTitle,
+                company,
+                candidateName: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                phone: formData.phone,
+                date: new Date().toLocaleDateString('fr-FR'),
+                status: 'Envoyée'
+            });
+            localStorage.setItem('userApplications', JSON.stringify(applicationHistory));
+        }
+
+        // Job filter
+        document.getElementById('job-filter').addEventListener('change', function() {
+            const sector = this.value;
+            const filteredJobs = sector === '' ? allJobs : allJobs.filter(job => job.sector === sector);
+            displayJobs(filteredJobs);
+        });
+
+        // Job posting form
+        document.getElementById('job-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitButton = this.querySelector('button[type="submit"]');
+            const editingJobId = submitButton.getAttribute('data-editing');
+            
+            if (editingJobId) {
+                // Update existing job
+                const jobIndex = allJobs.findIndex(j => j.id == editingJobId);
+                if (jobIndex > -1) {
+                    allJobs[jobIndex] = {
+                        ...allJobs[jobIndex], // Keep original id and dateCreated
+                        title: document.getElementById('job-title').value,
+                        company: document.getElementById('company-name').value,
+                        location: document.getElementById('job-location').value,
+                        sector: document.getElementById('job-sector').value,
+                        type: document.getElementById('job-type').value,
+                        salary: document.getElementById('job-salary').value || 'À négocier',
+                        description: document.getElementById('job-description').value,
+                        posted: "Modifié maintenant",
+                        lastModified: new Date().toISOString(),
+                        employerEmail: currentUser.email
+                    };
+                    
+                    // SAVE TO LOCALSTORAGE
+                    localStorage.setItem('allJobs', JSON.stringify(allJobs));
+                    
+                    alert('✅ Offre d\'emploi mise à jour avec succès!');
+                    
+                    // Reset form and button
+                    this.reset();
+                    submitButton.textContent = 'Publier l\'Offre';
+                    submitButton.removeAttribute('data-editing');
+                    
+                    // Reset form title
+                    const formTitle = document.querySelector('#post-job-section h2');
+                    if (formTitle) {
+                        formTitle.textContent = 'Poster une Offre d\'Emploi';
+                    }
+                    
+                    // Show jobs section
+                    showSection('jobs');
+                    displayJobs(allJobs);
+                }
+            } else {
+                // Create new job
+                const newJob = {
+                    id: Date.now(), // Use timestamp for unique ID
+                    title: document.getElementById('job-title').value,
+                    company: document.getElementById('company-name').value,
+                    location: document.getElementById('job-location').value,
+                    sector: document.getElementById('job-sector').value,
+                    type: document.getElementById('job-type').value,
+                    salary: document.getElementById('job-salary').value || 'À négocier',
+                    description: document.getElementById('job-description').value,
+                    posted: "Maintenant",
+                    dateCreated: new Date().toISOString(),
+                    employerEmail: currentUser.email // Use logged-in employer's email
+                };
+                
+                allJobs.unshift(newJob);
+                
+                // SAVE TO LOCALSTORAGE - PERMANENT STORAGE
+                localStorage.setItem('allJobs', JSON.stringify(allJobs));
+                
+                alert('✅ Offre d\'emploi publiée avec succès!');
+                
+                // Reset form
+                this.reset();
+                
+                // Show jobs section
+                showSection('jobs');
+                displayJobs(allJobs);
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved data from localStorage
+            const savedJobs = localStorage.getItem('allJobs');
+            if (savedJobs) {
+                allJobs = JSON.parse(savedJobs);
+            }
+            
+            const savedApplications = localStorage.getItem('allApplications');
+            if (savedApplications) {
+                allApplications = JSON.parse(savedApplications);
+            }
+            
+            checkAuthOnLoad();
+            displayJobs(allJobs);
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9611707b30a8593a',t:'MTc1MjgzNjA0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
